@@ -9,6 +9,7 @@ import trace.dto.RegisterRequest;
 import trace.dto.UserResponse;
 import trace.entity.User;
 import trace.repository.UserRepository;
+import trace.service.interfaces.JwtService;
 import trace.service.interfaces.UserService;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
     public UserResponse registerUser(RegisterRequest request) {
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
                 user.getUsername(),
                 user.getEmail()
         );
-
-        return new LoginResponse(response);
+        String token = jwtService.generateToken(user.getEmail());
+        return new LoginResponse(token,response);
     }
 }

@@ -3,14 +3,12 @@ package trace.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import trace.dto.LoginRequest;
 import trace.dto.LoginResponse;
 import trace.dto.RegisterRequest;
 import trace.dto.UserResponse;
+import trace.service.interfaces.JwtService;
 import trace.service.interfaces.UserService;
 
 @RequiredArgsConstructor
@@ -18,6 +16,7 @@ import trace.service.interfaces.UserService;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final UserService userService;
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest request){
@@ -30,4 +29,18 @@ public class AuthController {
         LoginResponse response =userService.loginUser(request);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/test")
+    public String test(@RequestHeader("Authorization") String token){
+        token = token.replace("Bearer ", "");
+        return jwtService.extractEmail(token);
+    }
+
+    @GetMapping("/validate")
+    public boolean validate(@RequestHeader("Authorization") String token){
+        token = token.replace("Bearer ", "");
+        return jwtService.validateToken(token);
+    }
+
+
 }
