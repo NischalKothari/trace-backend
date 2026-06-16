@@ -3,6 +3,7 @@ package trace.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -25,7 +26,10 @@ public class User implements UserDetails{
     @Column(nullable = false)
     private String password;
     private LocalDateTime createdAt;
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "user")
+    private List<Note> notes;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -35,6 +39,10 @@ public class User implements UserDetails{
     @Override
     public String getUsername() {
         return email; // Because our auth has email login and user details service uses by username method
+    }
+
+    public String getDisplayUsername() {
+        return username; // Actual username
     }
 
     @Override
