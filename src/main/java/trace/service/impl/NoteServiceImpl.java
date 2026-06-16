@@ -5,24 +5,33 @@ import org.springframework.stereotype.Service;
 import trace.dto.CreateNoteRequest;
 import trace.dto.NoteResponse;
 import trace.entity.Note;
+import trace.entity.Tag;
 import trace.entity.User;
 import trace.repository.NoteRepository;
+import trace.repository.TagRepository;
 import trace.service.interfaces.NoteService;
+import trace.service.interfaces.TagService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class NoteServiceImpl implements NoteService {
 
     private final NoteRepository noteRepository;
+    private final TagService tagService;
 
     @Override
     public NoteResponse createNote(CreateNoteRequest request, User user) {
         Note note = new Note();
+        Set<Tag> tags = tagService.getOrCreateTags(request.tags(),user);
         note.setTitle(request.title());
         note.setContent(request.content());
         note.setUser(user);
+        note.setTags(tags);
         Note savedNote = noteRepository.save(note);
         return mapToResponse(savedNote);
     }
@@ -61,10 +70,17 @@ public class NoteServiceImpl implements NoteService {
     }
 
     private NoteResponse mapToResponse(Note note) {
+
+        Set<String> tagNames = note.getTags()
+                .stream()
+                .map(Tag::getName)
+                .collect(Collectors.toSet());
+
         return new NoteResponse(
                 note.getId(),
                 note.getTitle(),
                 note.getContent(),
+                tagNames,
                 note.getCreatedAt(),
                 note.getUpdatedAt()
         );

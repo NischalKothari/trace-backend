@@ -3,6 +3,7 @@ package trace.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -30,6 +32,8 @@ public class User implements UserDetails{
     private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "user")
     private List<Note> notes;
+    @OneToMany(mappedBy = "user")
+    private Set<Tag> tags;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
