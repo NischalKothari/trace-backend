@@ -2,6 +2,7 @@ package trace.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import trace.dto.CreateNoteRequest;
 import trace.dto.NoteResponse;
 import trace.entity.Note;
@@ -51,13 +52,12 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    @Transactional
     public NoteResponse updateNote(Long id, CreateNoteRequest request, User user) {
         Note note = noteRepository.findByIdAndUser(id,user).orElseThrow(() -> new RuntimeException("Note not found"));
 
         note.setTitle(request.title());
         note.setContent(request.content());
-
-        noteRepository.save(note);
 
         return mapToResponse(note);
     }
