@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import trace.entity.Note;
 import trace.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,14 @@ public interface NoteRepository extends JpaRepository<Note,Long> {
     List<Note> searchNotes(
             @Param("user") User user,
             @Param("keyword") String keyword
+    );
+    Long countByUser(User user);
+    Long countByUserAndCreatedAtGreaterThanEqual(
+            User user,
+            LocalDateTime startOfWeek
+    );
+    List<Note> findTop5ByUserOrderByUpdatedAtDesc(
+            User user
     );
 
 }
