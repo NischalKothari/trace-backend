@@ -63,4 +63,12 @@ public class NoteController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Untraceable");
         }
     }
+
+    @GetMapping("/search")
+    public List<NoteResponse> searchNotes(
+            @AuthenticationPrincipal User user,
+            @RequestParam String keyword
+    ){
+        return noteService.searchNotes(user,keyword);
+    }
 }

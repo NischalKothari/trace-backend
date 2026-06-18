@@ -13,5 +13,5 @@ public interface NoteService {
     NoteResponse getNoteById(Long id, User user);
     NoteResponse updateNote(Long id, CreateNoteRequest request, User user);
     String deleteNote(Long id, User user);
-
+    List<NoteResponse> searchNotes(User user, String keyword);
 }

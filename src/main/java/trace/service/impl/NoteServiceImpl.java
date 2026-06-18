@@ -9,18 +9,16 @@ import trace.entity.Note;
 import trace.entity.Tag;
 import trace.entity.User;
 import trace.repository.NoteRepository;
-import trace.repository.TagRepository;
 import trace.service.interfaces.NoteService;
 import trace.service.interfaces.TagService;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class NoteServiceImpl implements NoteService {
+public class NoteServiceImpl implements NoteService{
 
     private final NoteRepository noteRepository;
     private final TagService tagService;
@@ -69,6 +67,12 @@ public class NoteServiceImpl implements NoteService {
         return "Note deleted successfully";
     }
 
+    @Override
+    public List<NoteResponse> searchNotes(User user, String keyword) {
+        List<Note> noteList = noteRepository.searchNotes(user, keyword);
+        return mapToResponseList(noteList);
+    }
+
     private NoteResponse mapToResponse(Note note) {
 
         Set<String> tagNames = note.getTags()
@@ -84,6 +88,14 @@ public class NoteServiceImpl implements NoteService {
                 note.getCreatedAt(),
                 note.getUpdatedAt()
         );
+    }
+
+    private List<NoteResponse> mapToResponseList(List<Note> noteList){
+
+        return noteList.stream()
+                .map(this::mapToResponse)
+                .toList();
+
     }
 
 }
