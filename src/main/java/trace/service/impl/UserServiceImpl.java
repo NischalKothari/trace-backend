@@ -8,6 +8,7 @@ import trace.dto.LoginResponse;
 import trace.dto.RegisterRequest;
 import trace.dto.UserResponse;
 import trace.entity.User;
+import trace.exception.ResourceNotFoundException;
 import trace.repository.UserRepository;
 import trace.service.interfaces.JwtService;
 import trace.service.interfaces.UserService;
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository
                 .findByEmail(request.email())
                 .orElseThrow(() ->
-                        new RuntimeException("No such email is registered with trace"));
+                        new ResourceNotFoundException("No such email is registered with trace"));
 
         boolean match = passwordEncoder
                 .matches(

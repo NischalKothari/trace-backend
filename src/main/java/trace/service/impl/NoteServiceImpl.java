@@ -11,6 +11,7 @@ import trace.dto.NoteResponse;
 import trace.entity.Note;
 import trace.entity.Tag;
 import trace.entity.User;
+import trace.exception.ResourceNotFoundException;
 import trace.repository.NoteRepository;
 import trace.service.interfaces.NoteService;
 import trace.service.interfaces.TagService;
@@ -47,14 +48,14 @@ public class NoteServiceImpl implements NoteService{
 
     @Override
     public NoteResponse getNoteById(Long id, User user) {
-        Note note = noteRepository.findByIdAndUser(id,user).orElseThrow(() -> new RuntimeException("Note not found"));
+        Note note = noteRepository.findByIdAndUser(id,user).orElseThrow(() -> new ResourceNotFoundException("Note not found"));
         return mapToResponse(note);
     }
 
     @Override
     @Transactional
     public NoteResponse updateNote(Long id, CreateNoteRequest request, User user) {
-        Note note = noteRepository.findByIdAndUser(id,user).orElseThrow(() -> new RuntimeException("Note not found"));
+        Note note = noteRepository.findByIdAndUser(id,user).orElseThrow(() -> new ResourceNotFoundException("Note not found"));
 
         note.setTitle(request.title());
         note.setContent(request.content());
@@ -64,7 +65,7 @@ public class NoteServiceImpl implements NoteService{
 
     @Override
     public String deleteNote(Long id, User user) {
-        Note note = noteRepository.findByIdAndUser(id,user).orElseThrow(()->new RuntimeException("Note is not traceable"));
+        Note note = noteRepository.findByIdAndUser(id,user).orElseThrow(()->new ResourceNotFoundException("Note is not traceable"));
         noteRepository.delete(note);
         return "Note deleted successfully";
     }
