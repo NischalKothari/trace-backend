@@ -2,6 +2,7 @@ package trace.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,10 +29,12 @@ public class NoteController {
     }
 
     @GetMapping
-    public List<NoteResponse> getMyNotes(
-            @AuthenticationPrincipal User user
+    public Page<NoteResponse> getMyNotes(
+            @AuthenticationPrincipal User user,
+            @RequestParam("page") int pageNumber,
+            @RequestParam("size") int pageSize
     ){
-        return noteService.getMyNotes(user);
+        return noteService.getMyNotes(user,pageNumber,pageSize);
     }
 
     @GetMapping("/{id}")

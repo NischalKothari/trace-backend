@@ -1,6 +1,9 @@
 package trace.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trace.dto.CreateNoteRequest;
@@ -36,11 +39,10 @@ public class NoteServiceImpl implements NoteService{
     }
 
     @Override
-    public List<NoteResponse> getMyNotes(User user) {
-        List<Note> noteList = noteRepository.findByUser(user);
-        return noteList.stream()
-                .map(this::mapToResponse)
-                .toList();
+    public Page<NoteResponse> getMyNotes(User user, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<Note> notePage = noteRepository.findByUser(user,pageable);
+        return notePage.map(this::mapToResponse);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package trace.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<UserResponse> register(@RequestBody @Valid RegisterRequest request){
         UserResponse response =  userService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
