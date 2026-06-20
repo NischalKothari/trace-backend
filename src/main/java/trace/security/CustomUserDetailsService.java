@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import trace.entity.User;
+import trace.exception.ResourceNotFoundException;
 import trace.repository.UserRepository;
 
 import java.util.Optional;
@@ -20,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 
         return userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("The email wasn't traced"));
+                        new ResourceNotFoundException("The email wasn't traced"));
 
     }
 }
