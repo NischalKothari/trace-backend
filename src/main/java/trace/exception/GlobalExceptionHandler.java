@@ -42,4 +42,27 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<?> handleConflictException(
+            ConflictException e
+    ){
+        Map<String,Object> response = new HashMap<>();
+        response.put("status", 409);
+        response.put("message", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> handleUnauthorizedException(
+            UnauthorizedException e
+    )
+    {
+        Map<String,Object> response = new HashMap<>();
+        response.put("status", 401);
+        response.put("message", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
 }

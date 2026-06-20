@@ -8,13 +8,14 @@ import trace.dto.LoginResponse;
 import trace.dto.RegisterRequest;
 import trace.dto.UserResponse;
 import trace.entity.User;
+import trace.exception.ConflictException;
 import trace.exception.ResourceNotFoundException;
+import trace.exception.UnauthorizedException;
 import trace.repository.UserRepository;
 import trace.service.interfaces.JwtService;
 import trace.service.interfaces.UserService;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -27,10 +28,10 @@ public class UserServiceImpl implements UserService {
     public UserResponse registerUser(RegisterRequest request) {
 
         if(userRepository.existsByEmail(request.email())){
-            throw new RuntimeException("Email already exists");
+            throw new ConflictException("Email already traceable");
         }
         if(userRepository.existsByUsername(request.username())){
-            throw new RuntimeException("Username already exists");
+            throw new ConflictException("Username already traceable");
         }
 
         User user = new User();
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
                 );
 
         if(!match){
-            throw new RuntimeException("Invalid Credentials, try to trace back your password or hit forget password");
+            throw new UnauthorizedException("Invalid Credentials, try to trace back your password or hit forget password");
         }
 
         UserResponse response = new UserResponse(
