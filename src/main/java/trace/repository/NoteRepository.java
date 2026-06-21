@@ -3,6 +3,7 @@ package trace.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,8 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NoteRepository extends JpaRepository<Note,Long> {
-
-    Page<Note> findByUser(User user, Pageable pageable);
     Optional<Note> findByIdAndUser(Long id,User user);
     @Query("Select n from Note n where n.user = :user and(lower(n.title) like lower(concat('%', :keyword , '%')) or lower(n.content) like lower(concat('%', :keyword , '%')))")
     List<Note> searchNotes(
@@ -30,5 +29,9 @@ public interface NoteRepository extends JpaRepository<Note,Long> {
     List<Note> findTop5ByUserOrderByUpdatedAtDesc(
             User user
     );
-
+    @EntityGraph(attributePaths = "tags") //Entity graph to solve N+1 query
+    Page<Note> findByUser(User user, Pageable pageable);
+    //or
+    @Query("Select distinct n from Note n left join fetch n.tags where n.user =:user ")
+    List<Note> findByUserWithTags(User user); // Fetch join used to solve N+1 Issue
 }
