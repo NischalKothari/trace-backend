@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:17
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: database_of_trace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pgKaPassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  trace-app:
+    build: .
+    container_name: trace-app
+    restart: always
+    depends_on:
+      - postgres-db
+    environment:
+      DB_URL: jdbc:postgresql://postgres-db:5432/database_of_trace
+      PG_PASS: pgKaPassword
+      JWT_SECRET: NRaTpcBtPTboT33UCfwHpgTExOeq7SayGIrhKivOxWp
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
